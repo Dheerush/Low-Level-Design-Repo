@@ -26,6 +26,7 @@ const user2 = new User("Penny", 27, "Female");
 
 /* NOTES:
  * 1. Constructor runs automatically when an object is created.
+ *    - It has to have the exact name "constructor"
  *    - We never call it manually. 
  *    - Even if you don’t write a constructor while creating a class, JS automatically provides a default empty constructor.
  *
