@@ -1,6 +1,6 @@
 // ============================= Polymorphism ===================================
 
-// ============================= Example 1 =============================
+// ================================ Example 1 ==================================
 // Parent
 class Bird {
     constructor(name) {
@@ -60,17 +60,54 @@ penguin.sleep(); // Penguin is sleeping
 // In lesson 1: we saw that we could only create 1 constructor, there can not be 2 constructors (default and parameterized); 
 
 
+// ====================================== Example 1 ===============================================
+class Payment {
+    pay(amount) {
+        throw new Error("pay() must be implemented by the child")
+    }
+}
 
+class CreditCardPayment extends Payment {
+    pay(amount) {
+        if (amount <= 0) throw new Error("Invalid Amount");
+        console.log(`Credit Card Payment done: Rs.${amount}`)
 
+    }
+}
+class UPIPayment extends Payment {
+    pay(amount) {
+        if (amount <= 0) throw new Error("Invalid Amount");
+        console.log(`UPI Payment done: Rs.${amount}`)
+    }
+}
+class CashPayment extends Payment {
+    pay(amount) {
+        if (amount <= 0) throw new Error("Invalid Amount");
+        console.log(`Cash Payment done: Rs.${amount}`)
+    }
+}
 
+function processPayment(paymentMethod, amount) {
+    paymentMethod.pay(amount);
+}
+
+const creditCard = new CreditCardPayment();
+const upi = new UPIPayment();  
+const cash = new CashPayment();
+
+processPayment(creditCard, 100);
+processPayment(upi, 100);
+processPayment(cash, 100);
 
 
 
 /** NOTES
  * - Polymorphism
- *   --> Poly: means many
+ *   --> Poly: means many ---> many forms --> The method behavior changes depends on the object
  *   --> morphism: morphism means transforming one form into another
- * - Polymorphism means the same function with different signatures is called many times. 
+ *   --> Polymorphism means the SAME message (method call) can result in DIFFERENT behavior depending on the object receiving it. 
+ *       meaning Same call → different behavior → based on object type
+ * -  Polymorphism means the same method call can result in different behavior
  *   --> It allows methods to do different things based on the object it is acting upon.
  *   --> In JavaScript, polymorphism works in two primary ways:
  *       1. Method Overriding: A child class overrides a method of its parent class. Different behavior → runtime decision
@@ -80,13 +117,5 @@ penguin.sleep(); // Penguin is sleeping
  *              ~ It improves: API usability, Readability, Developer experience (DX)
  * 
  */
-
-
-
-
-
-
-
-
 
 
