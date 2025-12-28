@@ -92,12 +92,60 @@ function processPayment(paymentMethod, amount) {
 }
 
 const creditCard = new CreditCardPayment();
-const upi = new UPIPayment();  
+const upi = new UPIPayment();
 const cash = new CashPayment();
 
 processPayment(creditCard, 100);
 processPayment(upi, 100);
 processPayment(cash, 100);
+
+
+// Example 3: Polymorphism WITHOUT inheritance (JS reality). This is important because JS is duck-typed. Polymorphism in JS is behavior-based, not class-based.
+
+
+const razorpay = {
+    pay(amount) {
+        console.log(`Razorpay payment of Rs.${amount}`);
+    }
+};
+
+// STILL WORKS
+processPayment(razorpay, 100);
+
+
+/**  
+ Q1 : Why does this work even though razorpay:
+      - does NOT extend Payment; as we have not created it as a child
+      - is NOT a child class
+      - is NOT an object of Payment
+      - should have thrown an error?
+
+ Ans:
+ i)   Unlike Java or C++, JavaScript does NOT check whether `razorpay` is an `instanceof Payment`. There is NO class-based type checking at runtime.
+
+ ii)  JavaScript is a DYNAMICALLY TYPED and DUCK-TYPED language. This means JS does not care about:
+       - which class an object belongs to
+       - whether inheritance exists
+       - whether it extends a parent class
+
+ iii) JS only checks ONE thing at runtime: Does the object have the method that is being called? In this case: `pay()`
+
+ iv)  Since `razorpay` has a `pay()` method, the call processPayment(razorpay, amount) works without any error.
+
+ v)   The error inside `Payment.pay()` is NOT thrown because:
+      - `Payment.pay()` is NEVER called
+      - JS directly calls `razorpay.pay()`
+
+ vi)  This behavior is called DUCK TYPING: “If an object looks like a Payment and behaves like a Payment, JavaScript treats it as a Payment.”
+      - Duck typing means an object is considered valid based on the methods it has, not the class it belongs to. If an object has the methods I need, I don’t care what class it belongs to.
+      - The famous phrase: "If it looks like a duck and quacks like a duck, it’s a duck".
+        This allows flexible designs but requires defensive checks or TypeScript interfaces for safety.
+
+ vii) Therefore, in JavaScript, polymorphism is BEHAVIOR-BASED, not CLASS-BASED.
+ */
+
+
+
 
 
 
