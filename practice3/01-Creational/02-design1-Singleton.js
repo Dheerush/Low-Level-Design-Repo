@@ -216,7 +216,7 @@ console.log(configA === configB);          // true
 /** NOTE: 
  *  1. The Instance: Represents the "Single Source of Truth." Its goal is to hold the unique memory address of the first object created so it can be shared across the entire app.
  *     - Imagine 3 different parts of our code (User A, User B, and User C) all trying to get the configuration.
- *       --> User A calls getInstance()  ==>  "Is the box empty? Yes. Create object, put it in the box, and give it to A. [In technical terms, we are giving User C a Reference (a memory pointer) to the existing object] .
+ *       -->  User A calls getInstance()  ==>  "Is the box empty? Yes. Create object, put it in the box, and give it to A. [In technical terms, we are giving User C a Reference (a memory pointer) to the existing object] .
  *       --> "User B calls getInstance() ==>  "Is the box empty? No. Give User B the exact same object that is already in the box.
  *       --> "User C calls getInstance() ==>  "Is the box empty? No. Give User C the exact same object."
  *  
