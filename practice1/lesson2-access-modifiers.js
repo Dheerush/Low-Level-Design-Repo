@@ -51,8 +51,8 @@ class Employee {
 
 let emp1= new Employee(101, "dheeru", 1000, 4);
 console.log("name is: ", emp1.name); // name is public it should be accessible
-console.log("salart is: ", emp1.#salary); // NOT ACCESSIBLE --> will give syntax error: SyntaxError: Private field '#salary' must be declared in an enclosing class 
-console.log("salart is: ", emp1.salary); // here we are getting salary via the getter not directly accessing the salary property
+console.log("salary is: ", emp1.#salary); // NOT ACCESSIBLE --> will give syntax error: SyntaxError: Private field '#salary' must be declared in an enclosing class 
+console.log("salary is: ", emp1.salary); // here we are getting salary via the getter not directly accessing the salary property
 
 
 
