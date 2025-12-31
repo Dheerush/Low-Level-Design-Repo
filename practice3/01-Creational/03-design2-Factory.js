@@ -2,7 +2,7 @@
 
 
 /** Introduction to Factory Method
- *  - Definition: A creational design pattern that provides an INTERFACE for creating objects, but lets SUBCLASSES or a FACTORY decide which class to instantiate.
+ *  - Definition: A creational design pattern that provides an INTERFACE for creating objects, but lets SUBCLASSES or a FACTORY decide which class to instantiate. Think of it as a blueprint for a production line.
  *
  *
  *  - Core Idea: "DON’T create objects directly using `new` everywhere. DELEGATE object creation to a factory".
@@ -57,11 +57,30 @@
  *
  *
  * - Components of Factory Method Design Pattern
- *   1. Product: Abstract interface or class for objects created by the factory.
- *   2. Concrete Product: The actual object that implements the product interface.
- *   3. Creator (Factory Interface/Abstract Class): Declares the factory method.
- *   4. Concrete Creator (Concrete Factory): Implements the factory method to create specific products.
- *
+ *   --> Imagine a company that makes Electronic Gadgets. 
+ *        1. Product Interface (The Blueprint/Contract)
+ *           > It is a set of rules. 
+ *           > The company creates a document that says: "Any gadget we sell must have a powerOn() button and a getBatteryLevel() indicator." 
+ *           > Why it's not a real object: You cannot use a "blueprint" to browse the internet. It’s just paper.
+ *          
+ * 
+ *        2. Concrete Product (The Actual Gadget)
+ *           > The assembly line follows the blueprint and builds a Smartphone and a Laptop.
+ *             ~ Smartphone: Implements powerOn() (by holding a side button) and getBatteryLevel() (shows a % on screen).
+ *             ~ Laptop: Implements powerOn() (by pressing a keyboard button) and getBatteryLevel() (shows an icon in the taskbar).
+ *             ~ Difference: Both follow the "Contract," but they do the work differently.
+ * 
+ * 
+ *        3. Creator (The Factory Management)
+ *           > The company HQ (Headquarters) says: "We are a gadget company. We must have a department that produces a gadget."
+ *           > What it is: They don't know which gadget yet; they just know they need a "Production Department." * 
+ * 
+ * 
+ *        4. Concrete Creator (The Specific Branch)
+ *          > The Smartphone Branch of the company.
+ *          > What it does: When you ask this branch for a product, they use the new keyword: return new Smartphone().
+ *        
+
  *
  */
 
@@ -168,9 +187,163 @@ console.log(""); // break
 
 
 
-
-
 //  ========================================== Example 3: With Factory Pattern ==========================================
 
+/**Approach: 
+ * - Before writing even a single line of code, we must understand:
+ *    1. What problem Factory Method is solving ?
+ *       --> The client should NOT decide which concrete object to create.
+ *       --> The client should depend on ABSTRACTIONS, not CONCRETE CLASSES.
+ *       --> Object creation should be DEFERRED to subclasses.
+ *       --> In short:
+ *           # Client: "If type is X, create object Y"  ❌
+ *           # Client: "Give me something that follows this contract" ✅      
+ * 
+ * 
+ * 
+ *    2. What are its components ? Are they all mandatory ?
+ *      -->  There are 4 main components, and while they all play a specific role, their "mandatory" status depends on how strictly you follow the formal pattern. 
+ *      -->  We usually define them in this logical order provided below
+ *      -->  In a strict, formal implementation,  all 4 are needed to maintain "Loose Coupling." However, in the real world (especially in JavaScript):
+ * 
+ *           1). Product Interface
+ *             > Is it mandatory ? : No, In JS, we often "skip" the formal interface class and just ensure our objects have the same method names (like .process() or .render())
+ *             > What it does ? 
+ *                ~ This is an INTERFACE or ABSTRACT CLASS. It defines WHAT the object can do.
+ *                ~ It does NOT know: who creates the object and when it is created.
+ *                ~ Think of it as a CONTRACT. For example: "Any Payment must be able to pay(amount)". 
+ *                ~ RULES : 
+ *                   >> No implementation details
+ *                   >> Only method signatures
+ *             
+ * 
+ *           2). CONCRETE PRODUCT (ACTUAL IMPLEMENTATION) :
+ *             > Is it mandatory ? : Yes,
+ *             > What it does?              
+ *               ~ These are the real objects created at runtime.
+ *               ~ Each concrete product IMPLEMENTS the Product interface.
+ *               ~ Each one has its own behavior
+ *               ~ Example thinking: CreditCardPayment, UPIPayment, NetBankingPayment
+ *               ~ RULES :
+ *                 >> Implements Product. 
+ *                 >> Contains real business logic 
+ *                 >> Client should NEVER directly create these using `new`
+ *             
+ * 
+ *           3). Creator (Abstract):
+ *             > Is it mandatory ? : Often "Optional". We might just have a single Factory class if your logic isn't complex enough to need subclasses.
+ *             > What it does ?
+ *               ~ This is an ABSTRACT CLASS (or interface).
+ *               ~ It DECLARES the factory method.
+ *               ~ It does NOT decide which concrete product to create.
+ *             > Important:
+ *               ~ The creator works with Product (abstraction), NOT concrete classes.
+ * 
+ * 
+ *           4). Concrete Creator
+ *             > Is it mandatory ? : Mandatory for the "Factory Method" pattern. This is where the actual new keyword lives.
+ *             > What it does ?
+ *               ~ This is where ACTUAL object creation happens.
+ *               ~ Each concrete creator overrides the factory method.
+ *               ~ Each one returns a DIFFERENT concrete product.
+ *             > Rules:
+ *               ~ Extends Creator
+ *               ~ Overrides factory method
+ *               ~ Uses `new`, but ONLY here
+ *             > Example thinking:
+ *               ~ CreditCardPaymentFactory → creates CreditCardPayment
+ *               ~ UPIPaymentFactory → creates UPIPayment
+ 
+ * */
+
+
+// Step1: Product (Abstraction)
+class Payment {
+    pay(amount) {
+        throw new Error("pay() must be implemented by subclasses")
+    }
+}
+
+// Step2: Concrete Products
+class NewCreditCardPayment extends Payment {
+    pay(amount) {
+        console.log(`Payment done via New Credit Card: Rs.${amount}`)
+    }
+}
+
+class NewUPIPayment extends Payment {
+    pay(amount) {
+        console.log(`Payment done via New UPI: Rs.${amount}`)
+    }
+}
+class NewNetBanking extends Payment {
+    pay(amount) {
+        console.log(`Payment done via New Net Banking: Rs.${amount}`)
+    }
+}
+
+// Step3: Creator (Factory Abstraction)
+class PaymentFactory {
+    createPayment() {
+        throw new Error("createPayment() must be implemented by subclasses");
+    }
+
+    // This is the "Button" the client presses. 
+    // It doesn't know WHICH payment it's using!
+    processPayment(amount) {
+        const payment = this.createPayment(); // FIX 1: Added () to call the method
+        payment.pay(amount); // FIX 2: Corrected method name to .pay()
+    }
+}
+
+// Step 4: Concrete Creators
+class CreditCardPaymentFactory extends PaymentFactory { 
+    createPayment() {
+        return new NewCreditCardPayment();
+    }
+}
+
+class NetBankingFactory extends PaymentFactory {
+    createPayment() {
+        return new NewNetBanking(); 
+    }
+}
+class UPIPaymentFactory extends PaymentFactory {
+    createPayment() {
+        return new NewUPIPayment(); 
+    }
+}
+
+// Client Execution
+console.log("========== Example 3: Factory Method (GoF Standard) ==========");
+const upiApp = new UPIPaymentFactory();
+upiApp.processPayment(5000);
+
+const cardApp = new CreditCardPaymentFactory();
+cardApp.processPayment(2000);
+
+
+
+/**
+ * ✅ WHY Example3 IS THE REAL FACTORY METHOD ?* 
+ * 1. Client depends on ABSTRACTIONS
+ *    - Client never uses `new ConcretePayment()`
+ *
+ * 2. Open–Closed Principle (OCP) is FOLLOWED
+ *    - To add PayPal:
+ *        -> Create PayPalPaymentMethod
+ *        -> Create PayPalPaymentFactory
+ *        -> NO existing code is modified
+ *
+ * 3. Object creation is delegated to SUBCLASSES
+ *    - This is the CORE of Factory Method
+ *
+ * 4. No messy if/else or switch
+ *
+ *
+ * 🚨 INTERVIEW INSIGHT:
+ *   --> Factory Method is NOT about removing `new`
+ *   --> It is about MOVING `new` to the RIGHT PLACE
+ */
 
 
